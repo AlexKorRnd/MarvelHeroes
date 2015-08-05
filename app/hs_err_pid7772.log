@@ -1,0 +1,175 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 35952 bytes for Chunk::new
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (allocation.cpp:390), pid=7772, tid=7160
+#
+# JRE version:  (8.0_51-b16) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.51-b03 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00000000021fd800):  JavaThread "main" [_thread_in_native, id=7160, stack(0x00000000020e0000,0x00000000021e0000)]
+
+Stack: [0x00000000020e0000,0x00000000021e0000]
+[error occurred during error reporting (printing stack bounds), id 0xc0000005]
+
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x32b4ca]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  java.lang.String.<init>([C)V+8
+j  sun.nio.cs.FastCharsetProvider.toLower(Ljava/lang/String;)Ljava/lang/String;+118
+j  sun.nio.cs.FastCharsetProvider.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+2
+j  sun.nio.cs.FastCharsetProvider.charsetForName(Ljava/lang/String;)Ljava/nio/charset/Charset;+10
+j  java.nio.charset.Charset.lookup2(Ljava/lang/String;)Ljava/nio/charset/Charset;+39
+j  java.nio.charset.Charset.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+40
+j  java.nio.charset.Charset.isSupported(Ljava/lang/String;)Z+1
+v  ~StubRoutines::call_stub
+j  java.lang.System.initProperties(Ljava/util/Properties;)Ljava/util/Properties;+0
+j  java.lang.System.initializeSystemClass()V+13
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00000000023f1000 JavaThread "Finalizer" daemon [_thread_blocked, id=9832, stack(0x0000000015d50000,0x0000000015e50000)]
+  0x00000000023ee000 JavaThread "Reference Handler" daemon [_thread_blocked, id=6432, stack(0x0000000015c50000,0x0000000015d50000)]
+=>0x00000000021fd800 JavaThread "main" [_thread_in_native, id=7160, stack(0x00000000020e0000,0x00000000021e0000)]
+
+Other Threads:
+  0x0000000014ac7800 VMThread [stack: 0x0000000015b50000,0x0000000015c50000] [id=4356]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 37888K, used 1310K [0x00000000eab00000, 0x00000000ed500000, 0x0000000100000000)
+  eden space 32768K, 4% used [0x00000000eab00000,0x00000000eac47ba0,0x00000000ecb00000)
+  from space 5120K, 0% used [0x00000000ed000000,0x00000000ed000000,0x00000000ed500000)
+  to   space 5120K, 0% used [0x00000000ecb00000,0x00000000ecb00000,0x00000000ed000000)
+ ParOldGen       total 86016K, used 0K [0x00000000c0000000, 0x00000000c5400000, 0x00000000eab00000)
+  object space 86016K, 0% used [0x00000000c0000000,0x00000000c0000000,0x00000000c5400000)
+ Metaspace       used 1203K, capacity 4480K, committed 4480K, reserved 1056768K
+  class space    used 130K, capacity 384K, committed 384K, reserved 1048576K
+
+Card table byte_map: [0x00000000117d0000,0x00000000119e0000] byte_map_base: 0x00000000111d0000
+
+Marking Bits: (ParMarkBitMap*) 0x000000006e7e4040
+ Begin Bits: [0x0000000011f40000, 0x0000000012f40000)
+ End Bits:   [0x0000000012f40000, 0x0000000013f40000)
+
+Polling page: 0x0000000000b10000
+
+CodeCache: size=245760Kb used=405Kb max_used=405Kb free=245354Kb
+ bounds [0x0000000002410000, 0x0000000002680000, 0x0000000011410000]
+ total_blobs=106 nmethods=0 adapters=80
+ compilation: enabled
+
+Compilation events (0 events):
+No events
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (2 events):
+Event: 0.294 Thread 0x00000000021fd800 Exception <a 'java/lang/NoSuchMethodError': Method sun.misc.Unsafe.defineClass(Ljava/lang/String;[BII)Ljava/lang/Class; name or signature does not match> (0x00000000eab12f58) thrown at [C:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u51\3951\hotspot\srЙjK%ЧТ?
+Event: 0.294 Thread 0x00000000021fd800 Exception <a 'java/lang/NoSuchMethodError': Method sun.misc.Unsafe.prefetchRead(Ljava/lang/Object;J)V name or signature does not match> (0x00000000eab131e8) thrown at [C:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u51\3951\hotspot\src\share\vm\prims\j
+
+Events (10 events):
+Event: 0.296 loading class java/util/WeakHashMap
+Event: 0.297 loading class java/util/WeakHashMap done
+Event: 0.297 loading class java/lang/ClassValue$ClassValueMap done
+Event: 0.297 loading class java/lang/reflect/Modifier
+Event: 0.297 loading class java/lang/reflect/Modifier done
+Event: 0.297 loading class java/lang/reflect/ReflectAccess
+Event: 0.297 loading class sun/reflect/LangReflectAccess
+Event: 0.297 loading class sun/reflect/LangReflectAccess done
+Event: 0.297 loading class java/lang/reflect/ReflectAccess done
+Event: 0.297 loading class java/util/Arrays
+
+
+Dynamic libraries:
+0x00007ff785490000 - 0x00007ff7854c7000 	C:\Program Files\Java\jdk1.8.0_51\bin\java.exe
+0x00007ffbbbb00000 - 0x00007ffbbbcc1000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffbbb5c0000 - 0x00007ffbbb66d000 	C:\WINDOWS\system32\KERNEL32.DLL
+0x00007ffbb89c0000 - 0x00007ffbb8b9d000 	C:\WINDOWS\system32\KERNELBASE.dll
+0x00007ffbb97a0000 - 0x00007ffbb9846000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x00007ffbb9230000 - 0x00007ffbb92cd000 	C:\WINDOWS\system32\msvcrt.dll
+0x00007ffbb91d0000 - 0x00007ffbb922b000 	C:\WINDOWS\system32\sechost.dll
+0x00007ffbb9860000 - 0x00007ffbb9986000 	C:\WINDOWS\system32\RPCRT4.dll
+0x00007ffbb9dc0000 - 0x00007ffbb9f0e000 	C:\WINDOWS\system32\USER32.dll
+0x00007ffbbb670000 - 0x00007ffbbb7f6000 	C:\WINDOWS\system32\GDI32.dll
+0x00007ffbb3540000 - 0x00007ffbb37b4000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.10240.16384_none_f41f7b285750ef43\COMCTL32.dll
+0x00007ffbb9760000 - 0x00007ffbb9796000 	C:\WINDOWS\system32\IMM32.DLL
+0x00007ffbb9b40000 - 0x00007ffbb9c9c000 	C:\WINDOWS\system32\MSCTF.dll
+0x00000000703c0000 - 0x0000000070492000 	C:\Program Files\Java\jdk1.8.0_51\jre\bin\msvcr100.dll
+0x000000006dfe0000 - 0x000000006e863000 	C:\Program Files\Java\jdk1.8.0_51\jre\bin\server\jvm.dll
+0x00007ffbb9750000 - 0x00007ffbb9758000 	C:\WINDOWS\system32\PSAPI.DLL
+0x00007ffbb6390000 - 0x00007ffbb6399000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ffbb9ca0000 - 0x00007ffbb9d09000 	C:\WINDOWS\system32\WS2_32.dll
+0x00007ffbb9850000 - 0x00007ffbb9858000 	C:\WINDOWS\system32\NSI.dll
+0x00007ffba90c0000 - 0x00007ffba90e3000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ffbb2da0000 - 0x00007ffbb2daa000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ffba9090000 - 0x00007ffba90bc000 	C:\WINDOWS\SYSTEM32\WINMMBASE.dll
+0x00007ffbb88b0000 - 0x00007ffbb88f4000 	C:\WINDOWS\system32\cfgmgr32.dll
+0x00007ffbb6e00000 - 0x00007ffbb6e27000 	C:\WINDOWS\SYSTEM32\DEVOBJ.dll
+0x00000000703b0000 - 0x00000000703bf000 	C:\Program Files\Java\jdk1.8.0_51\jre\bin\verify.dll
+0x0000000070380000 - 0x00000000703a9000 	C:\Program Files\Java\jdk1.8.0_51\jre\bin\java.dll
+0x000000006dfc0000 - 0x000000006dfd6000 	C:\Program Files\Java\jdk1.8.0_51\jre\bin\zip.dll
+0x00007ffbb9fd0000 - 0x00007ffbbb4f2000 	C:\WINDOWS\system32\SHELL32.dll
+0x00007ffbb8ba0000 - 0x00007ffbb91c9000 	C:\WINDOWS\system32\windows.storage.dll
+0x00007ffbb94c0000 - 0x00007ffbb973c000 	C:\WINDOWS\system32\combase.dll
+0x00007ffbb9f10000 - 0x00007ffbb9f61000 	C:\WINDOWS\system32\shlwapi.dll
+0x00007ffbb85c0000 - 0x00007ffbb85cf000 	C:\WINDOWS\system32\kernel.appcore.dll
+0x00007ffbb8900000 - 0x00007ffbb89b3000 	C:\WINDOWS\system32\shcore.dll
+0x00007ffbb8570000 - 0x00007ffbb85ba000 	C:\WINDOWS\system32\powrprof.dll
+0x00007ffbb8550000 - 0x00007ffbb8563000 	C:\WINDOWS\system32\profapi.dll
+
+VM Arguments:
+jvm_args: -Xmx1024M -Dfile.encoding=windows-1251 -Duser.country=RU -Duser.language=ru -Duser.variant 
+java_command: com.android.dx.command.Main --dex --output C:\Users\Alex\ProgrammingAndroid\Developing_Android_Apps\MarvelHeroes\app\build\intermediates\pre-dexed\debug\classes-fcedfee694fd3b29bf4a7a00b47b5eb06bef1472.jar C:\Users\Alex\ProgrammingAndroid\Developing_Android_Apps\MarvelHeroes\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar
+java_class_path (initial): D:\Android\android-sdk\build-tools\22.0.1\lib\dx.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.7.0_75
+PATH=C:\ProgramData\Oracle\Java\javapath;C:\Users\Alex\algs4\java\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x64;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\FPC\2.6.4\bin\i386-Win32;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Google\Cloud SDK\google-cloud-sdk\bin;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;D:\Android\android-sdk\platform-tools\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Thinking in Java\code;C:\Users\Alex\algs4\bin;C:\Users\Alex\algs4\java\bin;C:\FPC\2.6.4\bin\i386-win32;;D:\Android\android-sdk\platform-tools;D:\Android\android-sdk
+USERNAME=Алексей
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 10.0 , 64 bit Build 10240 (10.0.10240.16384)
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, erms, ht, tsc, tscinvbit, tscinv
+
+Memory: 4k page, physical 8251156k(1888204k free), swap 10348308k(286548k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.51-b03) for windows-amd64 JRE (1.8.0_51-b16), built on Jun  8 2015 18:03:07 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Wed Aug 05 15:17:55 2015
+elapsed time: 0 seconds (0d 0h 0m 0s)
+

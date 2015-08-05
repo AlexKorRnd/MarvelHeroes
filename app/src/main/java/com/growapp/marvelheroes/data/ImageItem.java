@@ -28,5 +28,8 @@ public class ImageItem {
         this.extension = extension;
     }
 
-
+    @Override
+    public String toString() {
+        return extension + "." + path;
+    }
 }

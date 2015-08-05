@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +20,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.growapp.marvelheroes.data.*;
 import com.growapp.marvelheroes.data.Character;
+import com.growapp.marvelheroes.database.HeroesDBAdapter;
 
 import org.json.JSONObject;
 
@@ -41,10 +40,15 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
 
-    private final static String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    //private final static String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    static final String TAG_STRING_URL = "TAG_STRING_URL";
+    static final String TAG_HERO_ID = "TAG_HERO_ID";
+    /*static final String TAG_NAME = "name";
+    static final String TAG_DESCRIPTION = "description";*/
 
     private Context mContext;
 
+    private HeroesDBAdapter mDBAdapter;
 
     volatile ArrayList<Character> mCharacters;;
 
@@ -54,15 +58,15 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
+        gridView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
         mContext = getActivity();
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url = buildUrl();
 
-        Log.d("LOG_TAG", "getActivity() = " + getActivity().toString());
 
-        Log.d("LOG_TAG", "url => " + url);
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -70,7 +74,6 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         // TODO Auto-generated method stub
-                        Log.d("LOG_TAG", "Response => " + response.toString());
 
                         GsonBuilder builder = new GsonBuilder();
                         Gson gson = builder.create();
@@ -78,6 +81,11 @@ public class MainActivityFragment extends Fragment {
 
                         CharacterDataContainer container = dataWrapper.getData();
                         mCharacters = dataWrapper.getData().getResults();
+
+
+                        for (Character character : mCharacters){
+                            mDBAdapter.addItem(character);
+                        }
 
                         GridViewAdapter gridAdapter = new GridViewAdapter(mContext, R.id.gridView, mCharacters);
                         gridView.setAdapter(gridAdapter);
@@ -94,10 +102,25 @@ public class MainActivityFragment extends Fragment {
 
         VolleyController.getInstance().addToRequestQueue(jsObjRequest);
 
+        mDBAdapter = new HeroesDBAdapter(getActivity());
+        mDBAdapter.open();
+
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), DetailInfo.class);
+                /*intent.putExtra(TAG_NAME, mCharacters.get(position).getName());
+                intent.putExtra(TAG_DESCRIPTION,
+                        mCharacters.get(position).getDescription());
 
+                ImageItem imageItem = mCharacters.get(position).getThumbnail();
+                intent.putExtra(TAG_STRING_URL, imageItem.getPath() + "." +imageItem.getExtension());*/
+
+                ImageItem imageItem = mCharacters.get(position).getThumbnail();
+                intent.putExtra(TAG_STRING_URL, imageItem.getPath() + "." +imageItem.getExtension());
+                intent.putExtra(TAG_HERO_ID, mCharacters.get(position).getId());
+                startActivity(intent);
             }
         });
 
