@@ -1,4 +1,4 @@
-package com.growapp.marvelheroes;
+package com.growapp.marvelheroes.fragment;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,9 +11,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.growapp.marvelheroes.data.Character;
-import com.growapp.marvelheroes.data.ImageItem;
-import com.growapp.marvelheroes.database.HeroesDBAdapter;
+import com.growapp.marvelheroes.R;
+import com.growapp.marvelheroes.model.Character;
+import com.growapp.marvelheroes.model.ImageItem;
+import com.growapp.marvelheroes.data.HeroesDBAdapter;
 
 
 
@@ -30,21 +31,11 @@ public class DetailInfoFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-        //String urlPhoto = "";
-        //String name = "";
-        //String description = "";
-        //int id = -2;
+
         int hero_id = -2;
         if (intent != null){
-            //name = intent.getStringExtra(MainActivityFragment.TAG_NAME);
-            //description = intent.getStringExtra(MainActivityFragment.TAG_DESCRIPTION);
-            //urlPhoto = intent.getStringExtra(MainActivityFragment.TAG_STRING_URL);
             hero_id = intent.getIntExtra(MainActivityFragment.TAG_HERO_ID, -1);
-
             Log.d("LOG_TAG", "hero_id =" + hero_id);
-            /*Log.d("LOG_TAG", "name =" + name);
-            Log.d("LOG_TAG", "description =" + description);
-            Log.d("LOG_TAG", "urlPhoto =" + urlPhoto);*/
         }
 
         HeroesDBAdapter adapter = new HeroesDBAdapter(getActivity());

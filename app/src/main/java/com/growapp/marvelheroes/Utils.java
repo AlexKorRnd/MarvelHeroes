@@ -1,10 +1,10 @@
-package com.growapp.marvelheroes.data;
+package com.growapp.marvelheroes;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-public class Md5 {
+public class Utils {
 
     public static String md5(final String s) {
         final String MD5 = "MD5";

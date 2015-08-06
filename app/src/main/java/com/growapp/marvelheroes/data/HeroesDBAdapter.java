@@ -1,4 +1,4 @@
-package com.growapp.marvelheroes.database;
+package com.growapp.marvelheroes.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.growapp.marvelheroes.data.Character;
-import com.growapp.marvelheroes.data.ImageItem;
+import com.growapp.marvelheroes.model.Character;
+import com.growapp.marvelheroes.model.ImageItem;
 
 public class HeroesDBAdapter {
 
@@ -47,33 +47,36 @@ public class HeroesDBAdapter {
 
     public Character getItem(int heroID) {
 
-        String selection = HeroesDBOpenHelper.KEY_HERO_ID + "=" + heroID;
+        String selection = Contract.HeroEntry.COLUMN_HERO_ID + "=" + heroID;
 
-        Cursor cursor = database.query(HeroesDBOpenHelper.HEROES_TABLE, null,
+        Cursor cursor = database.query(Contract.HeroEntry.TABLE_NAME, null,
                 selection, null, null, null, null);
 
         cursor.moveToFirst();
 
         Character character = new Character();
 
-        String name = cursor.getString(cursor.getColumnIndex(HeroesDBOpenHelper.KEY_NAME));
+        String name = cursor.getString(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_NAME));
         Log.d(LOG_TAG, "name = " + name);
         character.setName(name);
 
-        String description = cursor.getString(cursor.getColumnIndex(HeroesDBOpenHelper.KEY_DESCRIPTION));
+        String description =
+                cursor.getString(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_DESCRIPTION));
         Log.d(LOG_TAG, "description = " + description);
         character.setDescription(description);
 
         cursor.close();
 
-        Cursor cursorImage = database.query(HeroesDBOpenHelper.URL_PHOTO_HERO_TABLE, null,
+        Cursor cursorImage = database.query(Contract.ImageEntry.TABLE_NAME, null,
                 selection, null, null, null, null);
         cursorImage.moveToFirst();
 
-        String path = cursorImage.getString(cursorImage.getColumnIndex(HeroesDBOpenHelper.KEY_PATH));
+        String path =
+                cursorImage.getString(cursorImage.getColumnIndex(Contract.ImageEntry.COLUMN_PATH));
         Log.d(LOG_TAG, "path = " + path);
 
-        String extension = cursorImage.getString(cursorImage.getColumnIndex(HeroesDBOpenHelper.KEY_EXTENSION));
+        String extension =
+                cursorImage.getString(cursorImage.getColumnIndex(Contract.ImageEntry.COLUMN_EXTENSION));
         Log.d(LOG_TAG, "extension = " + extension);
 
         cursorImage.close();
@@ -88,23 +91,23 @@ public class HeroesDBAdapter {
     public long addItem(Character name) {
         ContentValues valuesHeroTable = new ContentValues();
 
-        valuesHeroTable.put(HeroesDBOpenHelper.KEY_HERO_ID, name.getId());
+        valuesHeroTable.put(Contract.HeroEntry.COLUMN_HERO_ID, name.getId());
         //Log.d("LOG_TAG", "hero_id = " + name.getId());
-        valuesHeroTable.put(HeroesDBOpenHelper.KEY_NAME, name.getName());
+        valuesHeroTable.put(Contract.HeroEntry.COLUMN_NAME, name.getName());
         //Log.d("LOG_TAG", "name = " + name.getName());
 
         //Log.d("LOG_TAG", "database == null is " + (database == null));
-        valuesHeroTable.put(HeroesDBOpenHelper.KEY_DESCRIPTION, name.getDescription());
+        valuesHeroTable.put(Contract.HeroEntry.COLUMN_DESCRIPTION, name.getDescription());
 
-        database.insert(HeroesDBOpenHelper.HEROES_TABLE, null, valuesHeroTable);
+        database.insert(Contract.HeroEntry.TABLE_NAME, null, valuesHeroTable);
 
 
         ContentValues valuesImageTable = new ContentValues();
-        valuesImageTable.put(HeroesDBOpenHelper.KEY_HERO_ID, name.getId());
-        valuesImageTable.put(HeroesDBOpenHelper.KEY_PATH, name.getThumbnail().getPath());
-        valuesImageTable.put(HeroesDBOpenHelper.KEY_EXTENSION, name.getThumbnail().getExtension());
+        valuesImageTable.put(Contract.ImageEntry.COLUMN_HERO_ID, name.getId());
+        valuesImageTable.put(Contract.ImageEntry.COLUMN_PATH, name.getThumbnail().getPath());
+        valuesImageTable.put(Contract.ImageEntry.COLUMN_EXTENSION, name.getThumbnail().getExtension());
 
-        return database.insert(HeroesDBOpenHelper.URL_PHOTO_HERO_TABLE, null, valuesImageTable);
+        return database.insert(Contract.ImageEntry.TABLE_NAME, null, valuesImageTable);
     }
 
 }

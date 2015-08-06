@@ -1,4 +1,4 @@
-package com.growapp.marvelheroes.data;
+package com.growapp.marvelheroes.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;

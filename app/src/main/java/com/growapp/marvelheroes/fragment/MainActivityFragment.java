@@ -1,4 +1,4 @@
-package com.growapp.marvelheroes;
+package com.growapp.marvelheroes.fragment;
 
 
 import android.content.Context;
@@ -19,21 +19,22 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.growapp.marvelheroes.data.*;
-import com.growapp.marvelheroes.data.Character;
-import com.growapp.marvelheroes.database.HeroesDBAdapter;
+import com.growapp.marvelheroes.GridViewAdapter;
+import com.growapp.marvelheroes.R;
+import com.growapp.marvelheroes.Utils;
+import com.growapp.marvelheroes.VolleyController;
+import com.growapp.marvelheroes.activity.DetailInfoActivity;
+import com.growapp.marvelheroes.model.*;
+import com.growapp.marvelheroes.model.Character;
+import com.growapp.marvelheroes.data.HeroesDBAdapter;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
 
 public class MainActivityFragment extends Fragment {
 
+    public static final String TAG_HERO_ID = "TAG_HERO_ID";
 
-    //private final static String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    static final String TAG_STRING_URL = "TAG_STRING_URL";
-    static final String TAG_HERO_ID = "TAG_HERO_ID";
-    /*static final String TAG_NAME = "name";
-    static final String TAG_DESCRIPTION = "description";*/
 
     private Context mContext;
 
@@ -96,7 +97,7 @@ public class MainActivityFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailInfo.class);
+                Intent intent = new Intent(getActivity(), DetailInfoActivity.class);
                 intent.putExtra(TAG_HERO_ID, mCharacters.get(position).getId());
                 startActivity(intent);
             }
@@ -117,36 +118,14 @@ public class MainActivityFragment extends Fragment {
         String ts = "timestamp";
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(LIMIT_PARAM, Constants.limit)
+                .appendQueryParameter(LIMIT_PARAM, getString(R.string.limit))
                 .appendQueryParameter(TS_PARAM, ts)
-                .appendQueryParameter(API_KEY_PARAM, Constants.apikey)
-                .appendQueryParameter(HASH_PARAM, Md5.md5(ts + Constants.privateKey + Constants.apikey))
-                .build();
+                .appendQueryParameter(API_KEY_PARAM, getString(R.string.apikey))
+                .appendQueryParameter(HASH_PARAM, Utils.md5(ts + getString(R.string.privateKey)
+                        + getString(R.string.apikey))).build();
 
         return builtUri.toString();
     }
-
-    /*private String md5(String ts) {
-
-        try {
-
-        // Create MD5 Hash
-        MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-        digest.update(ts.getBytes());
-        byte messageDigest[] = digest.digest();
-
-        // Create Hex String
-        StringBuffer hexString = new StringBuffer();
-        for (int i=0; i<messageDigest.length; i++)
-            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-        return hexString.toString();
-
-    } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-    }
-        return "";
-
-    }*/
 
 
 }

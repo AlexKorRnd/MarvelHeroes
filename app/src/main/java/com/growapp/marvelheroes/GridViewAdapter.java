@@ -10,8 +10,8 @@ import android.widget.ArrayAdapter;
 
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.growapp.marvelheroes.data.*;
-import com.growapp.marvelheroes.data.Character;
+import com.growapp.marvelheroes.model.*;
+import com.growapp.marvelheroes.model.Character;
 
 
 import java.util.ArrayList;
