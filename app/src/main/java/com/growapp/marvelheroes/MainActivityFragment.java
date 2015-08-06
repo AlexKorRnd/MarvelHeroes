@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.GridView;
-
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,17 +22,10 @@ import com.google.gson.GsonBuilder;
 import com.growapp.marvelheroes.data.*;
 import com.growapp.marvelheroes.data.Character;
 import com.growapp.marvelheroes.database.HeroesDBAdapter;
-
 import org.json.JSONObject;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment {
 
 
@@ -50,7 +39,7 @@ public class MainActivityFragment extends Fragment {
 
     private HeroesDBAdapter mDBAdapter;
 
-    volatile ArrayList<Character> mCharacters;;
+    private volatile ArrayList<Character> mCharacters;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,8 +62,6 @@ public class MainActivityFragment extends Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // TODO Auto-generated method stub
-
                         GsonBuilder builder = new GsonBuilder();
                         Gson gson = builder.create();
                         CharacterDataWrapper dataWrapper = gson.fromJson(response.toString(), CharacterDataWrapper.class);
@@ -95,7 +82,7 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO Auto-generated method stub
+
 
             }
         });
@@ -110,15 +97,6 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), DetailInfo.class);
-                /*intent.putExtra(TAG_NAME, mCharacters.get(position).getName());
-                intent.putExtra(TAG_DESCRIPTION,
-                        mCharacters.get(position).getDescription());
-
-                ImageItem imageItem = mCharacters.get(position).getThumbnail();
-                intent.putExtra(TAG_STRING_URL, imageItem.getPath() + "." +imageItem.getExtension());*/
-
-                ImageItem imageItem = mCharacters.get(position).getThumbnail();
-                intent.putExtra(TAG_STRING_URL, imageItem.getPath() + "." +imageItem.getExtension());
                 intent.putExtra(TAG_HERO_ID, mCharacters.get(position).getId());
                 startActivity(intent);
             }
@@ -142,13 +120,13 @@ public class MainActivityFragment extends Fragment {
                 .appendQueryParameter(LIMIT_PARAM, Constants.limit)
                 .appendQueryParameter(TS_PARAM, ts)
                 .appendQueryParameter(API_KEY_PARAM, Constants.apikey)
-                .appendQueryParameter(HASH_PARAM, Md5.Md5(ts + Constants.privateKey + Constants.apikey))
+                .appendQueryParameter(HASH_PARAM, Md5.md5(ts + Constants.privateKey + Constants.apikey))
                 .build();
 
         return builtUri.toString();
     }
 
-    private String md5(String ts) {
+    /*private String md5(String ts) {
 
         try {
 
@@ -168,7 +146,7 @@ public class MainActivityFragment extends Fragment {
     }
         return "";
 
-    }
+    }*/
 
 
 }

@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.growapp.marvelheroes.data.*;
 import com.growapp.marvelheroes.data.Character;
+import com.growapp.marvelheroes.data.ImageItem;
 import com.growapp.marvelheroes.database.HeroesDBAdapter;
-import com.growapp.marvelheroes.database.HeroesDBOpenHelper;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
+
 public class DetailInfoFragment extends Fragment {
 
     public DetailInfoFragment() {
@@ -32,15 +30,15 @@ public class DetailInfoFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-        String urlPhoto = "";
+        //String urlPhoto = "";
         //String name = "";
         //String description = "";
-        int id = -2;
+        //int id = -2;
         int hero_id = -2;
         if (intent != null){
             //name = intent.getStringExtra(MainActivityFragment.TAG_NAME);
             //description = intent.getStringExtra(MainActivityFragment.TAG_DESCRIPTION);
-            urlPhoto = intent.getStringExtra(MainActivityFragment.TAG_STRING_URL);
+            //urlPhoto = intent.getStringExtra(MainActivityFragment.TAG_STRING_URL);
             hero_id = intent.getIntExtra(MainActivityFragment.TAG_HERO_ID, -1);
 
             Log.d("LOG_TAG", "hero_id =" + hero_id);
@@ -57,12 +55,11 @@ public class DetailInfoFragment extends Fragment {
         Log.d("LOG_TAG", "character == null is " + (character == null));
 
         SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.imageView_detail);
-        //ImageItem imageItem = character.getThumbnail();
+        ImageItem imageItem = character.getThumbnail();
 
         //Log.d("LOG_TAG_DET", imageItem.toString());
 
-        Uri uri = Uri.parse(urlPhoto);
-        //Uri uri = Uri.parse(imageItem.getPath() + "." + imageItem.getExtension());
+        Uri uri = Uri.parse(imageItem.toString());
         Log.d("LOG_TAG", "uri = " + uri.toString());
         draweeView.setImageURI(uri);
 

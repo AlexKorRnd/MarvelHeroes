@@ -2,15 +2,13 @@ package com.growapp.marvelheroes.data;
 
 import java.util.ArrayList;
 
-/**
- * Created by Алексей on 04.08.2015.
- */
+
 public class CharacterDataContainer {
-    int offset;
-    int limit;
-    int total;
-    int count;
-    ArrayList<Character> results;
+    private int offset;
+    private int limit;
+    private int total;
+    private int count;
+    private ArrayList<Character> results;
 
 
     public int getOffset() {

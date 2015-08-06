@@ -1,20 +1,14 @@
 package com.growapp.marvelheroes.data;
 
-import org.json.JSONObject;
 
-import java.util.ArrayList;
-
-/**
- * Created by Алексей on 04.08.2015.
- */
 public class CharacterDataWrapper {
-    int code;
-    String status;
-    CharacterDataContainer data;
-    String etag;
-    String copyright;
-    String attributionText;
-    String attributionHTML;
+    private int code;
+    private String status;
+    private CharacterDataContainer data;
+    private String etag;
+    private String copyright;
+    private String attributionText;
+    private String attributionHTML;
 
 
 

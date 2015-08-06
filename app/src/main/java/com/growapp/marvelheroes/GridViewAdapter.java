@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.growapp.marvelheroes.data.*;
@@ -17,10 +16,15 @@ import com.growapp.marvelheroes.data.Character;
 
 import java.util.ArrayList;
 
+
 public class GridViewAdapter extends ArrayAdapter {
-    private Context mContext;
-    private int layoutResourceId;
-    private ArrayList<Character> mCharacters;
+    private final Context mContext;
+    private final int layoutResourceId;
+    private final ArrayList<Character> mCharacters;
+
+    static class ViewHolder {
+        SimpleDraweeView draweeView;
+    }
 
     public GridViewAdapter(Context context, int layoutResourceId, ArrayList<Character> data) {
         super(context, layoutResourceId, data);
@@ -44,39 +48,28 @@ public class GridViewAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View grid;
+        ViewHolder mViewHolder;
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        grid =(View) inflater.inflate(R.layout.grid_item_layout, parent, false);
-        Log.d("TEST", "parent = " + parent.getClass().getSimpleName());
+        if(convertView == null){
+            mViewHolder = new ViewHolder();
 
-        /*if (convertView == null) {
-            grid = new View(mContext);
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.grid_item_layout, parent, false);
+            mViewHolder.draweeView = (SimpleDraweeView) convertView.findViewById(R.id.image_hero);
 
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            grid =(View) inflater.inflate(R.layout.grid_item_layout, parent, false);
-            Log.d("TEST", "parent = " + parent.getClass().getSimpleName());
-            //Log.d("TEST", "convertView = " + convertView.getClass().getSimpleName());
-        } else {
-            grid = (View) convertView;
-            Log.d("TEST", "convertView = " + convertView.getClass().getSimpleName());
-            Log.d("TEST", "convertView = " + convertView.toString());
-        }*/
+            convertView.setTag(mViewHolder);
+        }else{
+            mViewHolder = (ViewHolder) convertView.getTag();
+        }
 
-
-        SimpleDraweeView draweeView = (SimpleDraweeView) grid.findViewById(R.id.image_hero);
         ImageItem imageItem = mCharacters.get(position).getThumbnail();
         Uri uri = Uri.parse(imageItem.getPath() + "." + imageItem.getExtension());
+        mViewHolder.draweeView.setImageURI(uri);
 
-        draweeView.setImageURI(uri);
+        Log.d("TEST", "parent = " + parent.getClass().getSimpleName());
 
-        TextView textView = (TextView) grid.findViewById(R.id.name_hero);
-        textView.setText(mCharacters.get(position).getName());
-
-
-
-
-        return draweeView;
+        return convertView;
     }
 
 

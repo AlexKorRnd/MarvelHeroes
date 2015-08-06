@@ -11,10 +11,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by Алексей on 05.08.2015.
- */
-public class CharacterDataContainerDeserializer implements JsonDeserializer {
+
+class CharacterDataContainerDeserializer implements JsonDeserializer {
 
     @Override
     public CharacterDataContainer deserialize(JsonElement json, Type typeOfT,
@@ -34,7 +32,7 @@ public class CharacterDataContainerDeserializer implements JsonDeserializer {
         Type collectionType = new TypeToken<Collection<Character>>(){}.getType();
         Collection<Character> characters =
                 gson.fromJson(json.getAsJsonObject().getAsJsonArray("results"), collectionType);
-        //ArrayList<Character> results = gson.fromJson(json.getAsJsonObject().getAsJsonArray("results"), Character.class);
+
 
         container.setResults((ArrayList<Character>)characters);
 

@@ -1,14 +1,10 @@
 package com.growapp.marvelheroes.data;
 
-
-/**
- * Created by Алексей on 04.08.2015.
- */
 public class Character {
-    int id;         //The unique ID of the character resource.
-    String name;    // The name of the character.
-    String description;     //A short bio or description of the character.
-    ImageItem thumbnail;   //The representative image for this character.
+    private int id;         //The unique ID of the character resource.
+    private String name;    // The name of the character.
+    private String description;     //A short bio or description of the character.
+    private ImageItem thumbnail;   //The representative image for this character.
 
     public Character() {
     }

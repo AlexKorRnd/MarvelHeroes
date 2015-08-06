@@ -1,8 +1,8 @@
 package com.growapp.marvelheroes.data;
 
 public class ImageItem {
-    String path;
-    String extension;
+    private String path;
+    private String extension;
 
     public ImageItem() {
     }
@@ -30,6 +30,6 @@ public class ImageItem {
 
     @Override
     public String toString() {
-        return extension + "." + path;
+        return path + "." + extension;
     }
 }

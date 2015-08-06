@@ -8,10 +8,8 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
-/**
- * Created by Алексей on 05.08.2015.
- */
-public class CharacterDataWrapperDeserializer implements JsonDeserializer {
+
+class CharacterDataWrapperDeserializer implements JsonDeserializer {
     @Override
     public CharacterDataWrapper deserialize(JsonElement json, Type typeOfT,
            JsonDeserializationContext context) throws JsonParseException {
