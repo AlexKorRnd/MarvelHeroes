@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.model.ImageItem;
 
@@ -48,12 +49,16 @@ public class HeroesDBAdapter {
 
 
 
-    public Character getItem(int heroID) {
+    public Character getItem(int heroID) throws EmptyCursorException {
 
         String selection = Contract.HeroEntry.COLUMN_HERO_ID + "=" + heroID;
 
         Cursor cursor = database.query(Contract.HeroEntry.TABLE_NAME, null,
                 selection, null, null, null, null);
+
+        if (cursor.getCount() == 0)
+            throw new EmptyCursorException("Cursor is empty");
+
 
         cursor.moveToFirst();
 
@@ -104,7 +109,13 @@ public class HeroesDBAdapter {
 
         for (int i=0; i<cursor.getCount(); ++i){
             int heroID = cursor.getInt(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_HERO_ID));
-            characters.add(getItem(heroID));
+            try {
+                characters.add(getItem(heroID));
+            } catch (EmptyCursorException e) {
+                Log.e(LOG_TAG, "EmptyCursorException");
+                Crashlytics.log(Log.ERROR, LOG_TAG, " EmptyCursorException");
+                e.printStackTrace();
+            }
             cursor.moveToNext();
         }
 
@@ -113,24 +124,35 @@ public class HeroesDBAdapter {
         return characters;
     }
 
-    public long addItem(Character name) {
-        ContentValues valuesHeroTable = new ContentValues();
+    public long addItem(Character character) {
 
-        valuesHeroTable.put(Contract.HeroEntry.COLUMN_HERO_ID, name.getId());
+        try {
+            getItem(character.getId()); // проверка на существование записи в БД
+        } catch (EmptyCursorException e) {
+            // такой записи в БД еще нет
 
-        valuesHeroTable.put(Contract.HeroEntry.COLUMN_NAME, name.getName());
+            ContentValues valuesHeroTable = new ContentValues();
 
-        valuesHeroTable.put(Contract.HeroEntry.COLUMN_DESCRIPTION, name.getDescription());
+            valuesHeroTable.put(Contract.HeroEntry.COLUMN_HERO_ID, character.getId());
 
-        database.insert(Contract.HeroEntry.TABLE_NAME, null, valuesHeroTable);
+            valuesHeroTable.put(Contract.HeroEntry.COLUMN_NAME, character.getName());
+
+            valuesHeroTable.put(Contract.HeroEntry.COLUMN_DESCRIPTION, character.getDescription());
+
+            database.insert(Contract.HeroEntry.TABLE_NAME, null, valuesHeroTable);
 
 
-        ContentValues valuesImageTable = new ContentValues();
-        valuesImageTable.put(Contract.ImageEntry.COLUMN_HERO_ID, name.getId());
-        valuesImageTable.put(Contract.ImageEntry.COLUMN_PATH, name.getThumbnail().getPath());
-        valuesImageTable.put(Contract.ImageEntry.COLUMN_EXTENSION, name.getThumbnail().getExtension());
+            ContentValues valuesImageTable = new ContentValues();
+            valuesImageTable.put(Contract.ImageEntry.COLUMN_HERO_ID, character.getId());
+            valuesImageTable.put(Contract.ImageEntry.COLUMN_PATH, character.getThumbnail().getPath());
+            valuesImageTable.put(Contract.ImageEntry.COLUMN_EXTENSION, character.getThumbnail().getExtension());
 
-        return database.insert(Contract.ImageEntry.TABLE_NAME, null, valuesImageTable);
+            return database.insert(Contract.ImageEntry.TABLE_NAME, null, valuesImageTable);
+        }
+
+
+        return 0;
+
     }
 
 }

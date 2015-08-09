@@ -34,6 +34,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.growapp.marvelheroes.R;
+import com.growapp.marvelheroes.data.EmptyCursorException;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.model.ImageItem;
 import com.growapp.marvelheroes.data.HeroesDBAdapter;
@@ -73,7 +74,13 @@ public class DetailInfoFragment extends Fragment {
         HeroesDBAdapter adapter = new HeroesDBAdapter(getActivity());
         adapter.open();
 
-        mCharacter = adapter.getItem(hero_id);
+        try {
+            mCharacter = adapter.getItem(hero_id);
+        } catch (EmptyCursorException e) {
+            Log.e(LOG_TAG, " EmptyCursorException");
+            Crashlytics.log(Log.ERROR, LOG_TAG, " EmptyCursorException");
+            e.printStackTrace();
+        }
 
         //SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.imageView_detail);
 

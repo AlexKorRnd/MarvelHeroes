@@ -27,6 +27,7 @@ import com.growapp.marvelheroes.R;
 import com.growapp.marvelheroes.Utils;
 import com.growapp.marvelheroes.VolleyController;
 import com.growapp.marvelheroes.activity.DetailInfoActivity;
+import com.growapp.marvelheroes.activity.MainActivity;
 import com.growapp.marvelheroes.model.*;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.data.HeroesDBAdapter;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 
 public class MainActivityFragment extends Fragment {
 
-    private static final String LOG_TAG = "LOG_TAG";
+    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     public static final String TAG_HERO_ID = "TAG_HERO_ID";
 
 
@@ -84,14 +85,13 @@ public class MainActivityFragment extends Fragment {
                         gridView.setAdapter(gridAdapter);
 
 
+
                         for (Character character : mCharacters){
                             mDBAdapter.addItem(character);
+
                         }
 
                         mDBAdapter.close();
-
-
-
                     }
                 }, new Response.ErrorListener() {
 
