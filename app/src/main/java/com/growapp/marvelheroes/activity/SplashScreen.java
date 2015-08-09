@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.crashlytics.android.Crashlytics;
 import com.growapp.marvelheroes.R;
 
 public class SplashScreen extends Activity {
@@ -34,6 +35,7 @@ public class SplashScreen extends Activity {
                 catch (InterruptedException e)
                 {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
                 finally
                 {

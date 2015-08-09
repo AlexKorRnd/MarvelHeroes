@@ -26,7 +26,6 @@ class CharacterDataContainerDeserializer implements JsonDeserializer {
         container.setTotal(json.getAsJsonObject().get("total").getAsInt());
         container.setCount(json.getAsJsonObject().get("count").getAsInt());
 
-        //container.setResults(json.getAsJsonObject().getAsJsonObject("results"));
 
         Gson gson = new Gson();
         Type collectionType = new TypeToken<Collection<Character>>(){}.getType();

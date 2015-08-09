@@ -1,11 +1,13 @@
 package com.growapp.marvelheroes.fragment;
 
-import android.content.ContentResolver;
+
+import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -20,27 +22,33 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.crashlytics.android.Crashlytics;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.common.Priority;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.growapp.marvelheroes.R;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.model.ImageItem;
 import com.growapp.marvelheroes.data.HeroesDBAdapter;
-import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCallback;
-import com.vk.sdk.VKScope;
-import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKError;
 
-import java.io.File;
-import java.net.URI;
 
 
 public class DetailInfoFragment extends Fragment {
 
-    public static final String LOG_TAG = "LOG_TAG";
+    public static final String LOG_TAG = DetailInfoFragment.class.getSimpleName();
 
     private ShareActionProvider mShareActionProvider;
     private Character mCharacter;
+
+    private Bitmap mBitmap;
+    private Context mContext;
 
     public DetailInfoFragment() {
         setHasOptionsMenu(true);
@@ -50,7 +58,9 @@ public class DetailInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_detail_info, container, false);
+        mContext = getActivity();
+
+        final View view = inflater.inflate(R.layout.fragment_detail_info, container, false);
 
         Intent intent = getActivity().getIntent();
 
@@ -65,12 +75,54 @@ public class DetailInfoFragment extends Fragment {
 
         mCharacter = adapter.getItem(hero_id);
 
-        SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.imageView_detail);
+        //SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.imageView_detail);
 
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
 
-        ImageItem imageItem = mCharacter.getThumbnail();
+        final ImageItem imageItem = mCharacter.getThumbnail();
         Uri uri = Uri.parse(imageItem.toString());
-        draweeView.setImageURI(uri);
+
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setRequestPriority(Priority.HIGH)
+                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+                .build();
+
+        DataSource<CloseableReference<CloseableImage>> dataSource =
+                imagePipeline.fetchDecodedImage(imageRequest, getActivity());
+
+
+
+        try {
+            dataSource.subscribe(new BaseBitmapDataSubscriber() {
+                @Override
+                public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                    if (bitmap == null) {
+                        Crashlytics.log(Log.ERROR, LOG_TAG,
+                                "Bitmap data source returned success, but bitmap null.");
+
+                        return;
+                    } else {
+                        mBitmap = bitmap;
+                        ImageView imageView = (ImageView) view.findViewById(R.id.imageView_detail);
+                        imageView.setImageBitmap(mBitmap);
+                    }
+                }
+
+                @Override
+                public void onFailureImpl(DataSource dataSource) {
+                    Crashlytics.log(Log.ERROR, LOG_TAG,
+                            "Bitmap data source returned error");
+
+                }
+            }, CallerThreadExecutor.getInstance());
+        } finally {
+            if (dataSource != null) {
+                dataSource.close();
+            }
+        }
+
+
 
         TextView textView = (TextView) view.findViewById(R.id.heroe_name);
         textView.setText(mCharacter.getName());
@@ -85,8 +137,6 @@ public class DetailInfoFragment extends Fragment {
 
 
 
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
@@ -94,11 +144,22 @@ public class DetailInfoFragment extends Fragment {
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        //mShareActionProvider.onPrepareSubMenu();
-        //mShareActionProvider.setShareIntent(initShareIntent());
+        mShareActionProvider.setShareIntent(initShareIntent());
 
     }
 
+    public Intent initShareIntent() {
+        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
+                mBitmap, "Image Description", null);
+        Uri bmpUri = Uri.parse(path);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                mCharacter.getName() + "\n" + mCharacter.getDescription());
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+        shareIntent.setType("image/*");
+
+        return shareIntent;
+    }
 
 }

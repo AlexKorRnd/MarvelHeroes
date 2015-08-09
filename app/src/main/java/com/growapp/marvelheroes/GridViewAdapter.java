@@ -48,7 +48,6 @@ public class GridViewAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Log.d("LOG_TAG_GRID", "mCharacters.size()" + mCharacters.size());
 
         ViewHolder mViewHolder;
 
@@ -70,7 +69,7 @@ public class GridViewAdapter extends ArrayAdapter {
         Uri uri = Uri.parse(imageItem.getPath() + "." + imageItem.getExtension());
         mViewHolder.draweeView.setImageURI(uri);
 
-        Log.d("TEST", "parent = " + parent.getClass().getSimpleName());
+
 
         return convertView;
     }

@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.growapp.marvelheroes.GridViewAdapter;
@@ -51,20 +52,18 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
-        /*gridView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));*/
 
         mContext = getActivity();
 
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
+
         String url = buildUrl();
 
         mDBAdapter = new HeroesDBAdapter(getActivity());
         mDBAdapter.open();
 
-        //mCharacters = new ArrayList<>();
 
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -83,9 +82,7 @@ public class MainActivityFragment extends Fragment {
 
                         final GridViewAdapter gridAdapter = new GridViewAdapter(mContext, R.id.gridView, mCharacters);
                         gridView.setAdapter(gridAdapter);
-                        //mCharacters = dataWrapper.getData().getResults();
-                       /* mCharacters.addAll(dataWrapper.getData().getResults());
-                        gridAdapter.setNotifyOnChange(true);*/
+
 
                         for (Character character : mCharacters){
                             mDBAdapter.addItem(character);
@@ -100,7 +97,7 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(LOG_TAG, "onErrorResponse");
+
 
                 mCharacters = mDBAdapter.getAll();
                 final GridViewAdapter gridAdapter = new GridViewAdapter(mContext, R.id.gridView, mCharacters);
@@ -108,8 +105,6 @@ public class MainActivityFragment extends Fragment {
                 gridAdapter.setNotifyOnChange(true);
 
 
-
-                Log.d("LOG_TAG_MAIN", "mCharacters.size()" + mCharacters.size());
 
                 if (mCharacters.size() == 0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -119,35 +114,23 @@ public class MainActivityFragment extends Fragment {
                     alertDialog.show();
                 }
 
-                for (Character character: mCharacters){
-                    Log.d(LOG_TAG, "id = " + character.getId());
-                    Log.d(LOG_TAG, "name = " + character.getName());
-                    Log.d(LOG_TAG, "description = " + character.getDescription());
-                    Log.d(LOG_TAG, "ImageUrl = " + character.getThumbnail().toString());
-                }
 
-                /*GridViewAdapter gridAdapter = new GridViewAdapter(mContext, R.id.gridView, mCharacters);
-                gridView.setAdapter(gridAdapter);*/
 
                 mDBAdapter.close();
             }
         });
 
-        VolleyController.getInstance().addToRequestQueue(jsObjRequest);
 
+        queue.add(jsObjRequest);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 Intent intent = new Intent(getActivity(), DetailInfoActivity.class);
                 intent.putExtra(TAG_HERO_ID, mCharacters.get(position).getId());
                 startActivity(intent);
 
-               /* Log.d(LOG_TAG + " onItemClick", "position = " + position);
-                Log.d(LOG_TAG+" onItemClick", "heroId = " + mCharacters.get(position).getId());
-                Log.d(LOG_TAG+" onItemClick", "name = " + mCharacters.get(position).getName());
-                Log.d(LOG_TAG+" onItemClick", "description = " +  mCharacters.get(position).getDescription());
-                Log.d(LOG_TAG+" onItemClick", "ImageUrl = " +  mCharacters.get(position).getThumbnail().toString());*/
             }
         });
 
