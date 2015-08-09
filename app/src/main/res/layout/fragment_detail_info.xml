@@ -21,7 +21,6 @@
             android:adjustViewBounds="true"
             />
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,6 +36,7 @@
             android:id="@+id/heroe_description"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"/>
+
 
     </LinearLayout>
 </ScrollView>

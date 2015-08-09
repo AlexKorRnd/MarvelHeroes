@@ -19,8 +19,6 @@ public class HeroesContentProvider extends ContentProvider {
     private HeroesDBOpenHelper mDBOpenHelper;
 
     static final int HEROES = 1;
-    static final int IMAGES = 2;
-
 
     static UriMatcher buildUriMatcher() {
 
@@ -28,7 +26,6 @@ public class HeroesContentProvider extends ContentProvider {
         final String authority = Contract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, Contract.PATH_HEROES, HEROES);
-        matcher.addURI(authority, Contract.PATH_IMAGES, IMAGES);
 
         return matcher;
     }
@@ -46,7 +43,6 @@ public class HeroesContentProvider extends ContentProvider {
 
         switch (match){
             case HEROES: return HeroEntry.CONTENT_TYPE;
-            case IMAGES: return ImageEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -63,20 +59,6 @@ public class HeroesContentProvider extends ContentProvider {
             {
                 retCursor = mDBOpenHelper.getReadableDatabase().query(
                         HeroEntry.TABLE_NAME,
-                        new String[] {HeroEntry.COLUMN_NAME},
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-
-            case IMAGES:
-            {
-                retCursor = mDBOpenHelper.getReadableDatabase().query(
-                        ImageEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,

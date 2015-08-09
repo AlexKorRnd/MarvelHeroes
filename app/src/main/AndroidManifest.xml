@@ -10,11 +10,19 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <activity android:name="com.vk.sdk.VKOpenAuthActivity" />
+
+        <activity
+            android:name="com.vk.sdk.VKServiceActivity"
+            android:label="ServiceActivity"
+            android:theme="@style/VK.Transparent" />
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -27,10 +35,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".activity.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
         <provider
             android:authorities="com.growapp.marvelheroes"
             android:name =".data.HeroesContentProvider"
-            android:exported = "true"/>
+            android:exported = "true"
+            android:grantUriPermissions="true"
+            android:readPermission="com.growapp.marvelheroes.READ_HEROES"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="3c7b3a488f9a53471ae4ec0f624811015f8d2fac" />
     </application>
 
 </manifest>

@@ -52,4 +52,6 @@ public class HeroesDBOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
+
+
 }

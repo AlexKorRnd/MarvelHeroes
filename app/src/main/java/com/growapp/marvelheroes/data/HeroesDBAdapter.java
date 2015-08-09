@@ -10,6 +10,8 @@ import android.util.Log;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.model.ImageItem;
 
+import java.util.ArrayList;
+
 public class HeroesDBAdapter {
 
 
@@ -45,6 +47,7 @@ public class HeroesDBAdapter {
 
 
 
+
     public Character getItem(int heroID) {
 
         String selection = Contract.HeroEntry.COLUMN_HERO_ID + "=" + heroID;
@@ -55,6 +58,9 @@ public class HeroesDBAdapter {
         cursor.moveToFirst();
 
         Character character = new Character();
+
+        int heroId = cursor.getInt(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_HERO_ID));
+        character.setId(heroId);
 
         String name = cursor.getString(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_NAME));
         Log.d(LOG_TAG, "name = " + name);
@@ -87,16 +93,33 @@ public class HeroesDBAdapter {
         return character;
     }
 
+    public ArrayList<Character> getAll(){
+
+        Cursor cursor = database.query(Contract.HeroEntry.TABLE_NAME, null,
+                null, null, null, null, null);
+
+        ArrayList<Character> characters = new ArrayList<>(cursor.getCount());
+
+        cursor.moveToFirst();
+
+        for (int i=0; i<cursor.getCount(); ++i){
+            int heroID = cursor.getInt(cursor.getColumnIndex(Contract.HeroEntry.COLUMN_HERO_ID));
+            characters.add(getItem(heroID));
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return characters;
+    }
 
     public long addItem(Character name) {
         ContentValues valuesHeroTable = new ContentValues();
 
         valuesHeroTable.put(Contract.HeroEntry.COLUMN_HERO_ID, name.getId());
-        //Log.d("LOG_TAG", "hero_id = " + name.getId());
-        valuesHeroTable.put(Contract.HeroEntry.COLUMN_NAME, name.getName());
-        //Log.d("LOG_TAG", "name = " + name.getName());
 
-        //Log.d("LOG_TAG", "database == null is " + (database == null));
+        valuesHeroTable.put(Contract.HeroEntry.COLUMN_NAME, name.getName());
+
         valuesHeroTable.put(Contract.HeroEntry.COLUMN_DESCRIPTION, name.getDescription());
 
         database.insert(Contract.HeroEntry.TABLE_NAME, null, valuesHeroTable);

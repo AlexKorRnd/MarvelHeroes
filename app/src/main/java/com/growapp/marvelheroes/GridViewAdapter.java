@@ -48,6 +48,8 @@ public class GridViewAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        Log.d("LOG_TAG_GRID", "mCharacters.size()" + mCharacters.size());
+
         ViewHolder mViewHolder;
 
         if(convertView == null){
@@ -59,6 +61,7 @@ public class GridViewAdapter extends ArrayAdapter {
             mViewHolder.draweeView = (SimpleDraweeView) convertView.findViewById(R.id.image_hero);
 
             convertView.setTag(mViewHolder);
+
         }else{
             mViewHolder = (ViewHolder) convertView.getTag();
         }

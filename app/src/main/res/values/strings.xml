@@ -4,7 +4,16 @@
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_detail_info">DetailInfo</string>
+
     <string name="apikey">4aab5874a0e157ce820533faf8b6915d</string>
     <string name="privateKey">5d7d7598f2b6dfb06731114c517ada47dacfce5f</string>
     <string name="limit">56</string>
+
+    <string name="title_no_internet_connection">Отсутствует соединение с интернетом</string>
+    <string name="message_no_internet_connection">Без соединения с интернетом невозможно загрузить список супергероев</string>
+
+    <string name="action_share">Share</string>
+
+    <integer name="com_vk_sdk_AppId">5024284</integer>
+
 </resources>
