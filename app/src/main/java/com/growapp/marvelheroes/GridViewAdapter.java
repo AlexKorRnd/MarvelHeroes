@@ -35,6 +35,8 @@ public class GridViewAdapter extends ArrayAdapter {
     private final int layoutResourceId;
     private ArrayList<Character> mCharacters;
 
+    private GridViewAdapter self;
+
     private static final String LOG_TAG = "LOG_TAG";
 
     private HeroesDBAdapter mDBAdapter;
@@ -50,7 +52,7 @@ public class GridViewAdapter extends ArrayAdapter {
         mContext = context;
         mCharacters = data;
 
-        final GridViewAdapter gridViewAdapter = this;
+        this.self = this;
 
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
@@ -71,7 +73,7 @@ public class GridViewAdapter extends ArrayAdapter {
                         CharacterDataWrapper dataWrapper = gson.fromJson(response.toString(), CharacterDataWrapper.class);
 
                         mCharacters.addAll(dataWrapper.getData().getResults());
-                        gridViewAdapter.notifyDataSetChanged();
+                        self.notifyDataSetChanged();
 
                         for (Character character : mCharacters){
                             mDBAdapter.addItem(character);
@@ -86,7 +88,7 @@ public class GridViewAdapter extends ArrayAdapter {
 
 
                 mCharacters.addAll(mDBAdapter.getAll());
-                gridViewAdapter.notifyDataSetChanged();
+                self.notifyDataSetChanged();
 
                 if (mCharacters.size() == 0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

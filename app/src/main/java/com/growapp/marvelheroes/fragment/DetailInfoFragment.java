@@ -1,16 +1,15 @@
 package com.growapp.marvelheroes.fragment;
 
 
-import android.content.ComponentCallbacks;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,18 +37,36 @@ import com.growapp.marvelheroes.data.EmptyCursorException;
 import com.growapp.marvelheroes.model.Character;
 import com.growapp.marvelheroes.model.ImageItem;
 import com.growapp.marvelheroes.data.HeroesDBAdapter;
-
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
+import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKAttachments;
+import com.vk.sdk.api.model.VKPhotoArray;
+import com.vk.sdk.api.model.VKWallPostResult;
+import com.vk.sdk.api.photo.VKImageParameters;
+import com.vk.sdk.api.photo.VKUploadImage;
 
 
 public class DetailInfoFragment extends Fragment {
 
-    public static final String LOG_TAG = DetailInfoFragment.class.getSimpleName();
+    //public static final String LOG_TAG = DetailInfoFragment.class.getSimpleName();
+    public static final String LOG_TAG = DetailInfoFragment.class.getSimpleName() + " LOG_TAG";
 
     private ShareActionProvider mShareActionProvider;
     private Character mCharacter;
 
     private Bitmap mBitmap;
     private Context mContext;
+
+    private String userID;
 
     public DetailInfoFragment() {
         setHasOptionsMenu(true);
@@ -148,32 +165,142 @@ public class DetailInfoFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_detail_info, menu);
 
-        MenuItem menuItem = menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        mShareActionProvider.setShareIntent(initShareIntent());
-
     }
 
-    public Intent initShareIntent() {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_share){
+            shareVK();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shareVK(){
+        String[] sMyScope = new String[]
+                {VKScope.MESSAGES, VKScope.WALL, VKScope.NOHTTPS, VKScope.PHOTOS};
+
+        VKSdk.login(this, sMyScope);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+            @Override
+            public void onResult(VKAccessToken res) {
+                // Пользователь успешно авторизовался
+                userID = res.userId;
+
+                Log.d(LOG_TAG, " onResult");
+
+                final Bitmap photo =mBitmap;
+
+                VKRequest request2 = VKApi.uploadWallPhotoRequest(new VKUploadImage(photo,
+                        VKImageParameters.jpgImage(0.9f)), 0, 0);
+
+                request2.executeWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        photo.recycle();
+                        VKApiPhoto photoModel = ((VKPhotoArray) response.parsedModel).get(0);
+                        //Make post with photo
+
+                        Log.d(LOG_TAG, " photoModel.getId() = " + photoModel.getId());
+
+                        makePost(new VKAttachments(photoModel),
+                                mCharacter.getName() + "\n" + mCharacter.getDescription());
+                        Log.d(LOG_TAG, " onComplete");
+
+                    }
+                    @Override
+                    public void onError(VKError error) {
+                        Log.d(LOG_TAG, " onError");
+                    }
+                });
+
+
+            }
+            @Override
+            public void onError(VKError error) {
+                // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
+                Log.d(LOG_TAG, " VKError onError");
+            }
+        })) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+    private void makePost(VKAttachments attachments, String message) {
+
+        final VKRequest post = VKApi.wall().post(VKParameters.from(VKApiConst.ATTACHMENTS, attachments, VKApiConst.MESSAGE, message));
+
+        post.setModelClass(VKWallPostResult.class);
+        post.executeWithListener(new VKRequest.VKRequestListener() {
+
+            @Override
+            public void onComplete(VKResponse response) {
+                try {
+
+                    super.onComplete(response);
+
+                    Log.d("LOG_TAG", "post ok");
+
+                    VKWallPostResult result = (VKWallPostResult) response.parsedModel;
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(String.format("https://vk.com/wall" +
+                                    userID + "_" + result.post_id)));
+                    startActivity(intent);
+
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Log.d(LOG_TAG, "error");
+                }
+            }
+        });
+    }
+
+    public void initShareIntent() {
         String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
                 mBitmap, "Image Description", null);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/*");
+        //shareIntent.setType("image/*");
         try{
 
             shareIntent.putExtra(Intent.EXTRA_TEXT,
                     mCharacter.getName() + "\n" + mCharacter.getDescription());
             Uri bmpUri = Uri.parse(path);
             shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+            //startActivity(Intent.createChooser(shareIntent, "How do you want to share?"));
 
-
-            return shareIntent;
+            //return shareIntent;
         }
         catch (NullPointerException e){
-            return  shareIntent;
+            //return  shareIntent;
+            startActivity(Intent.createChooser(shareIntent, "How do you want to share?"));
         }
 
     }
+
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+
+        // This activity implements OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+        popup.inflate(R.menu.share_menu);
+        popup.show();
+    }
+
 
 }

@@ -17,4 +17,6 @@
     <string name="button_ok">OK</string>
     <string name="image_not_found_cache">изображение отстутствует в кэше</string>
 
+    <integer name="com_vk_sdk_AppId">5024284</integer>
+
 </resources>

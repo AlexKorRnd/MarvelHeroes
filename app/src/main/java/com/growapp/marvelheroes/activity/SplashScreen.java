@@ -18,6 +18,8 @@ public class SplashScreen extends Activity {
 
         setContentView(R.layout.activity_splash_screen);
 
+
+
         Thread logoTimer = new Thread()
         {
             public void run()

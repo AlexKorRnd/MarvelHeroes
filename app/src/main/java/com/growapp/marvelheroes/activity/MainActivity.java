@@ -9,6 +9,8 @@ import com.crashlytics.android.*;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.growapp.marvelheroes.R;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.util.VKUtil;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,8 +18,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Fresco.initialize(getApplicationContext());
+        VKSdk.initialize(getApplicationContext());
 
+        String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
 
+        for (String s: fingerprints){
+            Log.d("LOG_TAG", "fingerprints = " + s);
+        }
 
         super.onCreate(savedInstanceState);
 
