@@ -11,6 +11,7 @@
         android:layout_width="130dp"
         android:layout_height="130dp"
         fresco:roundAsCircle="true"
+        android:contentDescription="@string/image_not_found_cache"
         />
 
 </FrameLayout>

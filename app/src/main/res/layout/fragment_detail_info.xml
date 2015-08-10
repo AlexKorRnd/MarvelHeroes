@@ -19,7 +19,7 @@
             android:layout_height="200dp"
             android:id="@+id/imageView_detail"
             android:adjustViewBounds="true"
-            />
+            android:contentDescription="@string/image_not_found_cache"/>
 
         <TextView
             android:layout_width="wrap_content"

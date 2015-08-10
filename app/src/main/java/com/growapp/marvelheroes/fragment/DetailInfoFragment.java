@@ -82,7 +82,6 @@ public class DetailInfoFragment extends Fragment {
             e.printStackTrace();
         }
 
-        //SimpleDraweeView draweeView = (SimpleDraweeView) view.findViewById(R.id.imageView_detail);
 
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
 
@@ -158,15 +157,23 @@ public class DetailInfoFragment extends Fragment {
     public Intent initShareIntent() {
         String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
                 mBitmap, "Image Description", null);
-        Uri bmpUri = Uri.parse(path);
+
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-        shareIntent.putExtra(Intent.EXTRA_TEXT,
-                mCharacter.getName() + "\n" + mCharacter.getDescription());
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
         shareIntent.setType("image/*");
+        try{
 
-        return shareIntent;
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    mCharacter.getName() + "\n" + mCharacter.getDescription());
+            Uri bmpUri = Uri.parse(path);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+
+
+            return shareIntent;
+        }
+        catch (NullPointerException e){
+            return  shareIntent;
+        }
+
     }
 
 }

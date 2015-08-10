@@ -2,6 +2,7 @@ package com.growapp.marvelheroes;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,8 @@ public class GridViewAdapter extends ArrayAdapter {
     private final Context mContext;
     private final int layoutResourceId;
     private ArrayList<Character> mCharacters;
+
+    private static final String LOG_TAG = "LOG_TAG";
 
     private HeroesDBAdapter mDBAdapter;
 
@@ -88,7 +91,14 @@ public class GridViewAdapter extends ArrayAdapter {
                 if (mCharacters.size() == 0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle(R.string.title_no_internet_connection)
-                            .setMessage(R.string.message_no_internet_connection);
+                            .setMessage(R.string.message_no_internet_connection)
+                            .setNeutralButton(R.string.button_ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
