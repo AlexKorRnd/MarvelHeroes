@@ -1,5 +1,6 @@
 package com.growapp.marvelheroes;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -9,10 +10,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.growapp.marvelheroes.data.HeroesDBAdapter;
 import com.growapp.marvelheroes.model.*;
 import com.growapp.marvelheroes.model.Character;
 
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -20,7 +32,9 @@ import java.util.ArrayList;
 public class GridViewAdapter extends ArrayAdapter {
     private final Context mContext;
     private final int layoutResourceId;
-    private final ArrayList<Character> mCharacters;
+    private ArrayList<Character> mCharacters;
+
+    private HeroesDBAdapter mDBAdapter;
 
     static class ViewHolder {
         SimpleDraweeView draweeView;
@@ -28,9 +42,64 @@ public class GridViewAdapter extends ArrayAdapter {
 
     public GridViewAdapter(Context context, int layoutResourceId, ArrayList<Character> data) {
         super(context, layoutResourceId, data);
+
         this.layoutResourceId = layoutResourceId;
-        this.mContext = context;
-        this.mCharacters = data;
+        mContext = context;
+        mCharacters = data;
+
+        final GridViewAdapter gridViewAdapter = this;
+
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+
+        String url = Utils.buildUrl(mContext);
+
+        mDBAdapter = new HeroesDBAdapter(mContext);
+        mDBAdapter.open();
+
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        GsonBuilder builder = new GsonBuilder();
+                        Gson gson = builder.create();
+                        CharacterDataWrapper dataWrapper = gson.fromJson(response.toString(), CharacterDataWrapper.class);
+
+                        mCharacters.addAll(dataWrapper.getData().getResults());
+                        gridViewAdapter.notifyDataSetChanged();
+
+                        for (Character character : mCharacters){
+                            mDBAdapter.addItem(character);
+                        }
+
+                        mDBAdapter.close();
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+                mCharacters.addAll(mDBAdapter.getAll());
+                gridViewAdapter.notifyDataSetChanged();
+
+                if (mCharacters.size() == 0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle(R.string.title_no_internet_connection)
+                            .setMessage(R.string.message_no_internet_connection);
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+                mDBAdapter.close();
+            }
+        });
+
+
+        queue.add(jsObjRequest);
+
     }
 
     public int getCount() {

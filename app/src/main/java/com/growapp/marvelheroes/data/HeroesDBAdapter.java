@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class HeroesDBAdapter {
 
 
-    private static final String LOG_TAG = HeroesDBOpenHelper.class.getSimpleName();
+    private static final String LOG_TAG = HeroesDBAdapter.class.getSimpleName();
 
     private Cursor cursor;
     private SQLiteDatabase database;
